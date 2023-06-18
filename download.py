@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import PySimpleGUI as sg
 from pathlib import Path
 import os
