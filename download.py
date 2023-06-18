@@ -5,7 +5,8 @@ import threading
 
 threads = []
 
-def download_song(window, command, url):
+def download_song(window, target_folder, url):
+    command = f'yt-dlp --extract-audio --audio-format mp3 -P "{target_folder}" -o "%(title)s.%(ext)s" "{url}" --ignore-errors'
     try:
         print("[i] Downloading...")
         window['status'].update(f'Downloading: {url}')
@@ -41,15 +42,16 @@ def get_songs(window, values):
     print(f"[i] aim folder: {target_folder}")
     for url in urls:
         parsed_url = url.strip()
-        command = f'yt-dlp --extract-audio --audio-format mp3 -P "{target_folder}" -o "%(title)s.%(ext)s" "{parsed_url}" --ignore-errors'
         print(f"[i] actual url: {parsed_url}")
             
         if(not url):
             print("[!] no url!")
             continue
-        
-        threads.append(threading.Thread(target=download_song, args=(window, command, url,)))
-    threads[0].start()
+
+        threads.append(threading.Thread(target=download_song, args=(window, target_folder, url,)))
+    
+    if(threads):
+        threads[0].start()
 
 downloads_folder = str(Path.joinpath(Path.home(), 'Downloads'))
 layout = [[sg.Text("Target Folder: ")],
